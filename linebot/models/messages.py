@@ -59,6 +59,15 @@ class TextMessage(Message):
         self.text = text
 
 
+class ContentProvider():
+    """docstring for ContentProvider"""
+    def __init__(self, type=None, original_content_url=None, preview_image_url=None, **kwargs):
+        super(ContentProvider, self).__init__(type=type, original_content_url=original_content_url, preview_image_url=preview_image_url, **kwargs)
+        self.type = type
+        self.original_content_url = original_content_url
+        self.preview_image_url = preview_image_url
+
+
 class ImageMessage(Message):
     """ImageMessage.
 
@@ -68,15 +77,20 @@ class ImageMessage(Message):
     The binary image data can be retrieved with the Content API.
     """
 
-    def __init__(self, id=None, **kwargs):
+    def __init__(self, id=None, content_provider=None, **kwargs):
         """__init__ method.
 
         :param str id: Message ID
         :param kwargs:
         """
-        super(ImageMessage, self).__init__(id=id, **kwargs)
+        super(ImageMessage, self).__init__(id=id, content_provider=content_provider, **kwargs)
 
         self.type = 'image'
+        self.content_provider = self.get_or_new_from_json_dict_with_types(
+            content_provider, {
+                'contentProvider': ContentProvider,
+            }
+        )
 
 
 class VideoMessage(Message):
